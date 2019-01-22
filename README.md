@@ -10,6 +10,6 @@
 >
 > src/domain/ClientThread_>run
 
-### 项目名/Name
+### 项目名/ProjectName
 
 > 感谢 google 机翻
