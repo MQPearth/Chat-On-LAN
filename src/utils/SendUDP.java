@@ -5,43 +5,41 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.LinkedList;
 
-public class SendUDP
-{
-	public static String[] sendUDP()
-	{
-		LinkedList<String> response = new LinkedList<>();
-		String host = "255.255.255.255";// ¹ã²¥µØÖ·
-		int port = 9999;// ¹ã²¥µÄÄ¿µÄ¶Ë¿Ú
-		String message = "@findServer@";// ÓÃÓÚ·¢ËÍµÄ×Ö·û´®
-		try
-		{
-			InetAddress adds = InetAddress.getByName(host);
-			DatagramSocket ds = new DatagramSocket();
-			DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), adds, port);
-			ds.send(dp);
+public class SendUDP {
+    public static String[] sendUDP() {
+        LinkedList<String> response = new LinkedList<>();
+        String host = "255.255.255.255";
+        // å¹¿æ’­çš„ç›®çš„ç«¯å£
+        int port = 9999;
+        // ç”¨äºå‘é€çš„å­—ç¬¦ä¸²
+        String message = "@findServer@";
+        try {
+            InetAddress adds = InetAddress.getByName(host);
+            DatagramSocket ds = new DatagramSocket();
+            DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), adds, port);
+            ds.send(dp);
 
-			byte[] buf = new byte[1024];
-			dp.setData(buf);
-			ds.setSoTimeout(100);
-			
-			long startTime = System.currentTimeMillis();
-			
-			while (System.currentTimeMillis()-startTime<800)
-			{
-				ds.receive(dp);// µÈ´ı½ÓÊÕ£¬»á½øÈë×èÈû×´Ì¬
-				String returnText = new String(dp.getData()).trim();
-				System.out.println(returnText);
-				response.add(returnText);
-			}
-			ds.close();
+            byte[] buf = new byte[1024];
+            dp.setData(buf);
+            ds.setSoTimeout(100);
 
-		} catch (Exception e)
-		{
-			System.out.println("udp½ÓÊÕ³¬Ê±");
-		}
-		System.out.println(response.toString());
-		String[] responseArr=new String[response.size()];
-		return response.toArray(responseArr);
-	}
+            long startTime = System.currentTimeMillis();
+
+            while (System.currentTimeMillis() - startTime < 800) {
+                // ç­‰å¾…æ¥æ”¶ï¼Œä¼šè¿›å…¥é˜»å¡çŠ¶æ€
+                ds.receive(dp);
+                String returnText = new String(dp.getData()).trim();
+                System.out.println(returnText);
+                response.add(returnText);
+            }
+            ds.close();
+
+        } catch (Exception e) {
+            System.out.println("udpæ¥æ”¶è¶…æ—¶");
+        }
+        System.out.println(response.toString());
+        String[] responseArr = new String[response.size()];
+        return response.toArray(responseArr);
+    }
 
 }

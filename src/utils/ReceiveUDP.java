@@ -4,42 +4,37 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 /**
- * ½ÓÊÕudp¹ã²¥
- * 
- * @author 22x
+ * æ¥æ”¶udpå¹¿æ’­
  *
+ * @author 22x
  */
-public class ReceiveUDP
-{
-	
-	
-	
-	public static void receiveUDP()
-	{
-		int port = 9999;
-		DatagramSocket ds = null;
-		DatagramPacket dp = null;
-		byte[] buf = new byte[1024];// ´æ´¢·¢À´µÄÏûÏ¢
-		String sendText = IPUtils.getLocalIP();
-		System.out.println("±¾»ú¾ÖÓòÍøip"+sendText);
-		try
-		{
-			while (true)
-			{
-				// °ó¶¨¶Ë¿ÚµÄ
-				ds = new DatagramSocket(port);
-				dp = new DatagramPacket(buf, buf.length);
-				System.out.println("¼àÌı¹ã²¥¶Ë¿Ú´ò¿ª£º");
-				ds.receive(dp);// µÈ´ı½ÓÊÕ£¬»á½øÈë×èÈû×´Ì¬
-				ds.send(new DatagramPacket(sendText.getBytes(), sendText.length(), dp.getSocketAddress()));
-				System.out.println("ÊÕµ½¹ã²¥ÏûÏ¢£º" + new String(dp.getData()).trim());
-				ds.close();
-			}
-		} catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
+public class ReceiveUDP {
+
+
+    public static void receiveUDP() {
+        int port = 9999;
+        DatagramSocket ds = null;
+        DatagramPacket dp = null;
+        // å­˜å‚¨å‘æ¥çš„æ¶ˆæ¯
+        byte[] buf = new byte[1024];
+        String sendText = IPUtils.getLocalIP();
+        System.out.println("æœ¬æœºå±€åŸŸç½‘ip" + sendText);
+        try {
+            while (true) {
+                // ç»‘å®šç«¯å£çš„
+                ds = new DatagramSocket(port);
+                dp = new DatagramPacket(buf, buf.length);
+                System.out.println("ç›‘å¬å¹¿æ’­ç«¯å£æ‰“å¼€ï¼š");
+                // ç­‰å¾…æ¥æ”¶ï¼Œä¼šè¿›å…¥é˜»å¡çŠ¶æ€
+                ds.receive(dp);
+                ds.send(new DatagramPacket(sendText.getBytes(), sendText.length(), dp.getSocketAddress()));
+                System.out.println("æ”¶åˆ°å¹¿æ’­æ¶ˆæ¯ï¼š" + new String(dp.getData()).trim());
+                ds.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

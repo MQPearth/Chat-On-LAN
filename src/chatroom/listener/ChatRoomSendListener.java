@@ -9,32 +9,28 @@ import chatroom.ui.ChatRoomUI;
 import domain.ClientThread;
 import domain.ServerThread;
 
-public class ChatRoomSendListener implements ActionListener
-{
+public class ChatRoomSendListener implements ActionListener {
 
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println("·¢ËÍÏûÏ¢");
-		String message = ChatRoomUI.getInstance().getInputMessageTextArea().getText().replaceAll("\r\n", "\n");
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("å‘é€æ¶ˆæ¯");
+        String message = ChatRoomUI.getInstance().getInputMessageTextArea().getText().replaceAll("\r\n", "\n");
 
-		if (message == null || message.equals(""))
-		{
-			JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "ÊäÈë²»ÄÜÎª¿Õ", "´íÎó", 0);
-			return;
-		}
-		if (ServerThread.getIntance().getServerNickName() == null) // ·şÎñ¶ËêÇ³ÆÎª¿Õ
-		{
-			System.out.println("Á¬½Ó¶Ë·¢ËÍÏûÏ¢");
-			ClientThread.getInstance().send("@MessageToAll@\r\n" + ClientThread.getInstance().getClientName() + "\r\n",
-					message);
-		} else
-		{
-			System.out.println("·şÎñ¶Ë·¢ËÍÏûÏ¢");
-			ServerThread.getIntance().sendToAll(ServerThread.getIntance().getServerNickName(), message);
-		}
-		ChatRoomUI.getInstance().getInputMessageTextArea().setText("");
+        if ("".equals(message)) {
+            JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "è¾“å…¥ä¸èƒ½ä¸ºç©º", "é”™è¯¯", 0);
+            return;
+        }
+        // æœåŠ¡ç«¯æ˜µç§°ä¸ºç©º
+        if (ServerThread.getIntance().getServerNickName() == null) {
+            System.out.println("è¿æ¥ç«¯å‘é€æ¶ˆæ¯");
+            ClientThread.getInstance().send("@MessageToAll@\r\n" + ClientThread.getInstance().getClientName() + "\r\n",
+                    message);
+        } else {
+            System.out.println("æœåŠ¡ç«¯å‘é€æ¶ˆæ¯");
+            ServerThread.getIntance().sendToAll(ServerThread.getIntance().getServerNickName(), message);
+        }
+        ChatRoomUI.getInstance().getInputMessageTextArea().setText("");
 
-	}
+    }
 
 }

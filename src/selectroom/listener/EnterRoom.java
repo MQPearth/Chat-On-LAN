@@ -8,21 +8,25 @@ import domain.ClientThread;
 import selectroom.ui.SelectRoomUI;
 import utils.InputNickNameCheck;
 
-public class EnterRoom implements ActionListener
-{
+public class EnterRoom implements ActionListener {
 
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		String ipGet=(String)SelectRoomUI.getInstance().getComboBox().getSelectedItem();
-		if(ipGet.equals("ÎŞÔÚÏßÁÄÌìÊÒ"))
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String ipGet = (String)SelectRoomUI.getInstance().getComboBox().getSelectedItem();
+        if ("æ— åœ¨çº¿èŠå¤©å®¤".equals(ipGet)) {
 			return;
-		System.out.println("½øÈë·¿¼ä");
-		SelectRoomUI.getInstance().dispose(); //Ñ¡Ôñ·¿¼ä´°¿Ú¹Ø±Õ
-		ClientThread.init(ipGet);//Á¬½Ó¶ËÏß³Ì³õÊ¼»¯£¬´«ÈëÑ¡ÔñµÄip
-		InputNickNameCheck.nickCheck(ClientThread.getInstance().getSocket());//Ïò·şÎñ¶ËÈ·ÈÏid
-		ChatRoomUI.init();//ÁÄÌìÊÒ³õÊ¼»¯
-		ClientThread.getInstance().start();//Á¬½Ó¶ËÏß³ÌÆô¶¯
-	}
+		}
+        System.out.println("è¿›å…¥æˆ¿é—´");
+        //é€‰æ‹©æˆ¿é—´çª—å£å…³é—­
+        SelectRoomUI.getInstance().dispose();
+        //è¿æ¥ç«¯çº¿ç¨‹åˆå§‹åŒ–ï¼Œä¼ å…¥é€‰æ‹©çš„ip
+        ClientThread.init(ipGet);
+        //å‘æœåŠ¡ç«¯ç¡®è®¤id
+        InputNickNameCheck.nickCheck(ClientThread.getInstance().getSocket());
+        //èŠå¤©å®¤åˆå§‹åŒ–
+        ChatRoomUI.init();
+        //è¿æ¥ç«¯çº¿ç¨‹å¯åŠ¨
+        ClientThread.getInstance().start();
+    }
 
 }

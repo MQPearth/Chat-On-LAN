@@ -4,58 +4,56 @@ package domain;
 import java.util.LinkedList;
 
 
-
 import chatroom.ui.ChatRoomUI;
 import utils.ListenPort;
 import utils.ReceiveUDP;
 
 /**
- * ·şÎñ¶ËÏß³Ì
- * 
- * @author 22x
+ * æœåŠ¡ç«¯çº¿ç¨‹
  *
+ * @author 22x
  */
-public class ServerThread extends Thread
-{
-	private LinkedList<NameSocket> sockets = new LinkedList<>(); // Á¬½Ó¶ËÁĞ±í
-	private String serverNickName;// ·şÎñ¶ËêÇ³Æ
+public class ServerThread extends Thread {
+    /**
+     * è¿æ¥ç«¯åˆ—è¡¨
+     */
+    private LinkedList<NameSocket> sockets = new LinkedList<>();
+    /**
+     * æœåŠ¡ç«¯æ˜µç§°
+     */
+    private String serverNickName;
 
-	private static ServerThread serverThread = null;
+    private static ServerThread serverThread = null;
 
-	public static boolean refreshFlag = true;
+    public static boolean refreshFlag = true;
 
-	private ServerThread()
-	{
+    private ServerThread() {
 
-	}
+    }
 
-	public void setNickName(String name)
-	{
-		this.serverNickName = name;
-	}
+    public void setNickName(String name) {
+        this.serverNickName = name;
+    }
 
-	public static ServerThread getIntance()
-	{
-		if (serverThread == null)
-			ServerThread.serverThread = new ServerThread();
+    public static ServerThread getIntance() {
+        if (serverThread == null) {
+            ServerThread.serverThread = new ServerThread();
+        }
 
-		return ServerThread.serverThread;
-	}
+        return ServerThread.serverThread;
+    }
 
-	@Override
-	public void run()
-	{
-		// ¼àÌı¶Ë¿Ú£¬½¨Á¢Á¬½Ó
-		new Thread()
-		{
-			@Override
-			public void run()
-			{
-				ListenPort.listen();
-			}
-		}.start();
+    @Override
+    public void run() {
+        // ç›‘å¬ç«¯å£ï¼Œå»ºç«‹è¿æ¥
+        new Thread() {
+            @Override
+            public void run() {
+                ListenPort.listen();
+            }
+        }.start();
 
-//		// ÔÚÏßÁĞ±í·¢ËÍÏß³Ì
+//		// åœ¨çº¿åˆ—è¡¨å‘é€çº¿ç¨‹
 //		new Thread()
 //		{
 //			@Override
@@ -65,176 +63,139 @@ public class ServerThread extends Thread
 //			}
 //		}.start();
 
-		// ¼àÌıUDP¹ã²¥
-		new Thread()
-		{
-			@Override
-			public void run()
-			{
-				ReceiveUDP.receiveUDP();
-			}
-		}.start();
-	}
+        // ç›‘å¬UDPå¹¿æ’­
+        new Thread() {
+            @Override
+            public void run() {
+                ReceiveUDP.receiveUDP();
+            }
+        }.start();
+    }
 
-	/**
-	 * Èº·¢ÏûÏ¢
-	 * 
-	 * @param message
-	 *            ÏûÏ¢ÄÚÈİ
-	 */
-	public void sendToAll(String fromUser, String message)
-	{
-		String forword = "@MessageToAll@\r\n" + fromUser + "\r\n" + message;
-		for (NameSocket socket : sockets)
-		{
-			socket.sendMessage(forword);
-		}
-		ChatRoomUI.getInstance().toScreen(fromUser, message);
-	}
+    /**
+     * ç¾¤å‘æ¶ˆæ¯
+     *
+     * @param message æ¶ˆæ¯å†…å®¹
+     */
+    public void sendToAll(String fromUser, String message) {
+        String forword = "@MessageToAll@\r\n" + fromUser + "\r\n" + message;
+        for (NameSocket socket : sockets) {
+            socket.sendMessage(forword);
+        }
+        ChatRoomUI.getInstance().toScreen(fromUser, message);
+    }
 
-	/**
-	 * Ë½ÁÄÏûÏ¢
-	 * 
-	 * @param toUser
-	 *            ÖÁ ÓÃ»§
-	 * @param fromUser
-	 *            À´×ÔÓÃ»§
-	 * @param message
-	 *            ÏûÏ¢ÄÚÈİ
-	 */
-	public void sendToOne(String toUser, String fromUser, String message)
-	{
+    /**
+     * ç§èŠæ¶ˆæ¯
+     *
+     * @param toUser   è‡³ ç”¨æˆ·
+     * @param fromUser æ¥è‡ªç”¨æˆ·
+     * @param message  æ¶ˆæ¯å†…å®¹
+     */
+    public void sendToOne(String toUser, String fromUser, String message) {
 
-		String forword = "@MessageToOne@\r\n" + fromUser + "\r\n" + message;
-		System.out.println("¼´½«Ë½ÁÄµÄÏûÏ¢" + forword);
-		for (NameSocket socket : sockets)
-		{
-			if (socket.getName().equals(toUser))
-			{
-				socket.sendMessage(forword);
-				return;
-			}
-		}
+        String forword = "@MessageToOne@\r\n" + fromUser + "\r\n" + message;
+        System.out.println("å³å°†ç§èŠçš„æ¶ˆæ¯" + forword);
+        for (NameSocket socket : sockets) {
+            if (socket.getName().equals(toUser)) {
+                socket.sendMessage(forword);
+                return;
+            }
+        }
 
-	}
+    }
 
-	/**
-	 * ·¢ËÍÎÄ¼şÇ°µÄÌáĞÑ
-	 * 
-	 * @param toUser
-	 *            ÖÁÓÃ»§
-	 * @param fromUser
-	 *            À´Ö®ÓÃ»§
-	 * @param fileName
-	 *            ÎÄ¼şÃû
-	 * @param fileSize
-	 *            ÎÄ¼ş´óĞ¡
-	 */
-	public void sendFileMessage(String toUser, String fromUser, String fileName, String fileSize)
-	{
-		String forword = "@FileToOne@\r\n" + toUser + "\r\n" + fromUser + "\r\n" + fileName + "\r\n" + fileSize;
-		for (NameSocket socket : sockets)
-		{
-			if (socket.getName().equals(toUser))
-			{
-				socket.sendMessage(forword);
-				break;
-			}
-		}
-	}
+    /**
+     * å‘é€æ–‡ä»¶å‰çš„æé†’
+     *
+     * @param toUser   è‡³ç”¨æˆ·
+     * @param fromUser æ¥ä¹‹ç”¨æˆ·
+     * @param fileName æ–‡ä»¶å
+     * @param fileSize æ–‡ä»¶å¤§å°
+     */
+    public void sendFileMessage(String toUser, String fromUser, String fileName, String fileSize) {
+        String forword = "@FileToOne@\r\n" + toUser + "\r\n" + fromUser + "\r\n" + fileName + "\r\n" + fileSize;
+        for (NameSocket socket : sockets) {
+            if (socket.getName().equals(toUser)) {
+                socket.sendMessage(forword);
+                break;
+            }
+        }
+    }
 
-	/**
-	 * ¾Ü¾ø½ÓÊÕÎÄ¼ş
-	 * 
-	 * @param toUser
-	 *            ÖÁÓÃ»§
-	 * @param isRec
-	 *            ÊÇ·ñ½ÓÊÕ
-	 */
-	public void sendFileResponse(String toUser, String isRec)
-	{
-		String forword = "@SendFileResponse@\r\n"+isRec+"\r\n" + toUser;
-		System.out.println("¼´½«»Ø¸´ÎÄ¼şÇëÇó" + forword);
-		for (NameSocket socket : sockets)
-		{
-			if (socket.getName().equals(toUser))
-			{
-				socket.sendMessage(forword);
-				return;
-			}
-		}
-	}
+    /**
+     * æ‹’ç»æ¥æ”¶æ–‡ä»¶
+     *
+     * @param toUser è‡³ç”¨æˆ·
+     * @param isRec  æ˜¯å¦æ¥æ”¶
+     */
+    public void sendFileResponse(String toUser, String isRec) {
+        String forword = "@SendFileResponse@\r\n" + isRec + "\r\n" + toUser;
+        System.out.println("å³å°†å›å¤æ–‡ä»¶è¯·æ±‚" + forword);
+        for (NameSocket socket : sockets) {
+            if (socket.getName().equals(toUser)) {
+                socket.sendMessage(forword);
+                return;
+            }
+        }
+    }
 
-	/**
-	 * Í¬Òâ½ÓÊÕ
-	 * 
-	 * @param toUser
-	 *            ÖÁÓÃ»§
-	 * @param isRec
-	 *            ÊÇ·ñ½ÓÊÕ
-	 * @param ip
-	 *            ±¾»úip
-	 */
-	public void sendFileResponse(String toUser, String isRec, String ip)
-	{
-		String forword = "@SendFileResponse@\r\n"+isRec+"\r\n" + toUser + "\r\n" + ip;
-		System.out.println("¼´½«»Ø¸´ÎÄ¼şÇëÇó" + forword);
-		for (NameSocket socket : sockets)
-		{
-			if (socket.getName().equals(toUser))
-			{
-				socket.sendMessage(forword);
-				return;
-			}
-		}
-	}
+    /**
+     * åŒæ„æ¥æ”¶
+     *
+     * @param toUser è‡³ç”¨æˆ·
+     * @param isRec  æ˜¯å¦æ¥æ”¶
+     * @param ip     æœ¬æœºip
+     */
+    public void sendFileResponse(String toUser, String isRec, String ip) {
+        String forword = "@SendFileResponse@\r\n" + isRec + "\r\n" + toUser + "\r\n" + ip;
+        System.out.println("å³å°†å›å¤æ–‡ä»¶è¯·æ±‚" + forword);
+        for (NameSocket socket : sockets) {
+            if (socket.getName().equals(toUser)) {
+                socket.sendMessage(forword);
+                return;
+            }
+        }
+    }
 
-	public void sendOnLineList()
-	{
+    public void sendOnLineList() {
 
-		StringBuffer message = new StringBuffer("@OnLineList@\r\n" + serverNickName);
+        StringBuffer message = new StringBuffer("@OnLineList@\r\n" + serverNickName);
 
-		// »ñÈ¡ÔÚÏßÁĞ±í
-		for (NameSocket socket : sockets)
-		{
-			message.append("&" + socket.getName());
-		}
+        // è·å–åœ¨çº¿åˆ—è¡¨
+        for (NameSocket socket : sockets) {
+            message.append("&" + socket.getName());
+        }
 
-		System.out.println("¼´½«·¢ËÍµÄÁĞ±í" + message.toString());
-		// ±éÀú·¢ËÍ
-		for (NameSocket socket : sockets)
-		{
-			socket.sendMessage(message.toString());
-		}
+        System.out.println("å³å°†å‘é€çš„åˆ—è¡¨" + message.toString());
+        // éå†å‘é€
+        for (NameSocket socket : sockets) {
+            socket.sendMessage(message.toString());
+        }
 
-	}
+    }
 
-	/**
-	 * ½«ÏûÏ¢ÏÔÊ¾µ½ÆÁÄ»
-	 */
+    /**
+     * å°†æ¶ˆæ¯æ˜¾ç¤ºåˆ°å±å¹•
+     */
 //	public static void toScreen(String nickName, String message)
 //	{
-//		ChatRoomUI.getInstance().getChatRecordTextArea().append(nickName + " £º " + message + "\n");
+//		ChatRoomUI.getInstance().getChatRecordTextArea().append(nickName + " ï¼š " + message + "\n");
 //		int height= 10999 ;   
 //	    Point p = new  Point();   
 //	    p.setLocation(0 , ChatRoomUI.getInstance().getChatRecordTextArea().getLineCount()*height);   
 //	    ChatRoomUI.getInstance().getSp().getViewport().setViewPosition(p);
 //	}  
-	
+    public LinkedList<NameSocket> getSockets() {
+        return sockets;
+    }
 
-	public LinkedList<NameSocket> getSockets()
-	{
-		return sockets;
-	}
+    public String getServerNickName() {
+        return serverNickName;
+    }
 
-	public String getServerNickName()
-	{
-		return serverNickName;
-	}
-
-	public void setServerNickName(String serverNickName)
-	{
-		this.serverNickName = serverNickName;
-	}
+    public void setServerNickName(String serverNickName) {
+        this.serverNickName = serverNickName;
+    }
 
 }

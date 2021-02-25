@@ -13,86 +13,77 @@ import domain.NameSocket;
 import domain.ServerThread;
 import domain.SocketThread;
 
-public class ListenPort
-{
-	/**
-	 * ¼ì²éĞÂÁ¬½ÓµÄêÇ³ÆÊÇ·ñÓëÒÑÓĞÁ¬½ÓµÄêÇ³ÆÊÇ·ñÖØ¸´
-	 * 
-	 * @param sockets
-	 * @param name
-	 * @return false ÖØ¸´ true ²»ÖØ¸´
-	 */
-	public static boolean checkName(LinkedList<NameSocket> sockets, String name)
-	{
-		System.out.println(ServerThread.getIntance().getServerNickName() + "´ı¼ì²âêÇ³Æ" + name);
-		if (ServerThread.getIntance().getServerNickName().equals(name))
-			return false;
-		for (NameSocket socket : sockets)
-		{
-			if (socket.getName().equals(name))
-				return false;
-		}
-		return true;
-	}
+public class ListenPort {
+    /**
+     * æ£€æŸ¥æ–°è¿æ¥çš„æ˜µç§°æ˜¯å¦ä¸å·²æœ‰è¿æ¥çš„æ˜µç§°æ˜¯å¦é‡å¤
+     *
+     * @param sockets
+     * @param name
+     * @return false é‡å¤ true ä¸é‡å¤
+     */
+    public static boolean checkName(LinkedList<NameSocket> sockets, String name) {
+        System.out.println(ServerThread.getIntance().getServerNickName() + "å¾…æ£€æµ‹æ˜µç§°" + name);
+        if (ServerThread.getIntance().getServerNickName().equals(name)) {
+            return false;
+        }
+        for (NameSocket socket : sockets) {
+            if (socket.getName().equals(name)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * ¼àÌıÁ¬½Ó
-	 * 
-	 * @throws IOException
-	 */
-	public static void listen()
-	{
-		final LinkedList<NameSocket> sockets = ServerThread.getIntance().getSockets();
+    /**
+     * ç›‘å¬è¿æ¥
+     *
+     * @throws IOException
+     */
+    public static void listen() {
+        final LinkedList<NameSocket> sockets = ServerThread.getIntance().getSockets();
 
-		try
-		{
-			@SuppressWarnings("resource")
-			ServerSocket serverSocket = new ServerSocket(12345); //
-			while (true)
-			{
-				final NameSocket socket = new NameSocket(serverSocket.accept());
-				System.out.println("ÓĞÁ¬½Ó");
-				new Thread()
-				{
-					public void run()
-					{
-						try
-						{
+        try {
+            @SuppressWarnings("resource")
+            ServerSocket serverSocket = new ServerSocket(12345);
+            while (true) {
+                final NameSocket socket = new NameSocket(serverSocket.accept());
+                System.out.println("æœ‰è¿æ¥");
+                new Thread() {
+                    @Override
+                    public void run() {
+                        try {
 
-							boolean flag = true;
+                            boolean flag = true;
 
-							byte[] buf = new byte[1024];
-							InputStream is = socket.getSocket().getInputStream();
-							while (flag)
-							{
-								buf = new byte[1024];
-								is.read(buf);
-								String[] txts = new String(buf).trim().split("\r\n");
-								System.out.println("½ÓÊÕµ½ÏûÏ¢" + new String(buf).trim());
-								if (txts[0].equals("@NickName@") && checkName(sockets, txts[1]))
-								{
-									sockets.add(socket);
-									socket.setName(txts[1]);
-									new SocketThread(socket).start();
-									socket.getSocket().getOutputStream().write("1".getBytes());
-									System.out.println("Í¨¹ıÑéÖ¤"+socket.getName()+"½øÈë·¿¼ä");
-									flag = false;
-								} else
-									socket.getSocket().getOutputStream().write("-1".getBytes());
-							}
-						} catch (Exception e)
-						{
-							e.printStackTrace();
-							System.out.println("ListenPort.listen");
-						}
-					}
-				}.start();
+                            byte[] buf = new byte[1024];
+                            InputStream is = socket.getSocket().getInputStream();
+                            while (flag) {
+                                buf = new byte[1024];
+                                is.read(buf);
+                                String[] txts = new String(buf).trim().split("\r\n");
+                                System.out.println("æ¥æ”¶åˆ°æ¶ˆæ¯" + new String(buf).trim());
+                                if (txts[0].equals("@NickName@") && checkName(sockets, txts[1])) {
+                                    sockets.add(socket);
+                                    socket.setName(txts[1]);
+                                    new SocketThread(socket).start();
+                                    socket.getSocket().getOutputStream().write("1".getBytes());
+                                    System.out.println("é€šè¿‡éªŒè¯" + socket.getName() + "è¿›å…¥æˆ¿é—´");
+                                    flag = false;
+                                } else {
+                                    socket.getSocket().getOutputStream().write("-1".getBytes());
+                                }
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println("ListenPort.listen");
+                        }
+                    }
+                }.start();
 
-			}
-		} catch (Exception e)
-		{
-			JOptionPane.showMessageDialog(null, "´´½¨·¿¼ä·¢Éú´íÎó"+e.getMessage(), "´íÎó", 0);
-			System.exit(0);
-		}
-	}
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "åˆ›å»ºæˆ¿é—´å‘ç”Ÿé”™è¯¯" + e.getMessage(), "é”™è¯¯", 0);
+            System.exit(0);
+        }
+    }
 }

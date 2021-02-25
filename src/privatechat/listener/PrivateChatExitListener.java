@@ -5,21 +5,19 @@ import java.awt.event.ActionListener;
 
 import privatechat.ui.PrivateChatUI;
 
-public class PrivateChatExitListener implements ActionListener 
-{
+public class PrivateChatExitListener implements ActionListener {
 
-	private String title;
-	public PrivateChatExitListener(String title)
-	{
-		this.title=title;
-	}
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println("ÍË³öË½ÁÄ");
-		PrivateChatUI.removeChatUI(title);
-		
-		
-	}
+    private String title;
+
+    public PrivateChatExitListener(String title) {
+        this.title = title;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("é€€å‡ºç§èŠ");
+        PrivateChatUI.removeChatUI(title);
+
+    }
 
 }

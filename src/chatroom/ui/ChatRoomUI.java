@@ -8,160 +8,156 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.Point;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.*;
 
 import chatroom.listener.ChatRoomExitListener;
 import chatroom.listener.ChatRoomSendListener;
 import chatroom.listener.PrivateChatListener;
 
 /**
- * ÈºÁÄ½çÃæ
- * 
- * @author zzx
+ * ç¾¤èŠç•Œé¢
  *
+ * @author zzx
  */
-public class ChatRoomUI extends JFrame
-{
-	private static final long serialVersionUID = 1L;
-	private static ChatRoomUI chatRoomUI = null;
-	private JTextArea chatRecordTextArea = new JTextArea(); // ÁÄÌì¼ÇÂ¼
-	private JTextArea inputMessageTextArea = new JTextArea("ÊäÈëÏûÏ¢");// ÏûÏ¢ÊäÈë¿ò
-	private JScrollPane sp = null; // ÁÄÌì¼ÇÂ¼¹ö¶¯Ãæ°å
-	private JComboBox<String> onlineListCombo = new JComboBox<>();// ÓÃ»§ÁĞ±í
-	private JButton exitButton = new JButton("ÍË³ö");// ÍË³ö°´Å¥
-	private JButton sendButton = new JButton("·¢ËÍ");// ·¢ËÍ°´Å¥
+public class ChatRoomUI extends JFrame {
+    private static final long serialVersionUID = 1L;
+    private static ChatRoomUI chatRoomUI = null;
+    /**
+     * èŠå¤©è®°å½•
+     */
+    private JTextArea chatRecordTextArea = new JTextArea();
+    /**
+     * æ¶ˆæ¯è¾“å…¥æ¡†
+     */
+    private JTextArea inputMessageTextArea = new JTextArea("è¾“å…¥æ¶ˆæ¯");
+    /**
+     * èŠå¤©è®°å½•æ»šåŠ¨é¢æ¿
+     */
+    private JScrollPane sp = null;
+    /**
+     * ç”¨æˆ·åˆ—è¡¨
+     */
+    private JComboBox<String> onlineListCombo = new JComboBox<>();
+    /**
+     * é€€å‡ºæŒ‰é’®
+     */
+    private JButton exitButton = new JButton("é€€å‡º");
+    /**
+     * å‘é€æŒ‰é’®
+     */
+    private JButton sendButton = new JButton("å‘é€");
 
-	private ChatRoomUI()
-	{
-		setTitle("ÁÄÌìÊÒ");
-		setBounds(490, 150, 605, 650);
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private ChatRoomUI() {
+        setTitle("èŠå¤©å®¤");
+        setBounds(490, 150, 605, 650);
+        setResizable(false);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
-		JPanel panel = new JPanel();
-		setContentPane(panel);
-		panel.setLayout(null);
+        JPanel panel = new JPanel();
+        setContentPane(panel);
+        panel.setLayout(null);
 
-		JPanel chatRecordPanel = new JPanel();
-		chatRecordPanel.setLayout(new GridLayout(1, 1));
-		chatRecordPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		chatRecordPanel.setBounds(0, 0, 599, 400);
-		sp = new JScrollPane(chatRecordTextArea);
-		chatRecordTextArea.setMargin(new Insets(10, 10, 10, 10));//ÎÄ±¾ÓëÎÄ±¾ÓòµÄ±ß¾à
-		chatRecordTextArea.setEditable(false);// ²»¿É±à¼­
-		chatRecordTextArea.setLineWrap(true);
-		chatRecordTextArea.setFont(new Font("Î¢ÈíÑÅºÚ", 0, 16));
-		chatRecordTextArea.setFocusable(false);
-		chatRecordPanel.add(sp);
-		panel.add(chatRecordPanel);
+        JPanel chatRecordPanel = new JPanel();
+        chatRecordPanel.setLayout(new GridLayout(1, 1));
+        chatRecordPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        chatRecordPanel.setBounds(0, 0, 599, 400);
+        sp = new JScrollPane(chatRecordTextArea);
+        //æ–‡æœ¬ä¸æ–‡æœ¬åŸŸçš„è¾¹è·
+        chatRecordTextArea.setMargin(new Insets(10, 10, 10, 10));
+        // ä¸å¯ç¼–è¾‘
+        chatRecordTextArea.setEditable(false);
+        chatRecordTextArea.setLineWrap(true);
+        chatRecordTextArea.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));
+        chatRecordTextArea.setFocusable(false);
+        chatRecordPanel.add(sp);
+        panel.add(chatRecordPanel);
 
-		JPanel inputMessagePanel = new JPanel();
-		inputMessagePanel.setLayout(new GridLayout(1, 1));
-		inputMessagePanel.setBounds(0, 400, 600, 150);
-		inputMessageTextArea.setLineWrap(true);
-		inputMessageTextArea.setFont(new Font("Î¢ÈíÑÅºÚ", 0, 16));
-		inputMessagePanel.add(inputMessageTextArea);
-		panel.add(inputMessagePanel);
+        JPanel inputMessagePanel = new JPanel();
+        inputMessagePanel.setLayout(new GridLayout(1, 1));
+        inputMessagePanel.setBounds(0, 400, 600, 150);
+        inputMessageTextArea.setLineWrap(true);
+        inputMessageTextArea.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));
+        inputMessagePanel.add(inputMessageTextArea);
+        panel.add(inputMessagePanel);
 
-		JPanel functionPanel = new JPanel();
-		functionPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 20));
-		// functionPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		functionPanel.setBounds(0, 550, 600, 150);
-		JButton privateChatButton = new JButton("·¢ÆğË½ÁÄ");
-		functionPanel.add(onlineListCombo);
-		functionPanel.add(privateChatButton);
-		onlineListCombo.setPreferredSize(new Dimension(100, 25));
-		functionPanel.add(exitButton);
-		functionPanel.add(sendButton);
-		exitButton.addActionListener(new ChatRoomExitListener());
-		sendButton.addActionListener(new ChatRoomSendListener());
-		panel.add(functionPanel);
+        JPanel functionPanel = new JPanel();
+        functionPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 20));
+        // functionPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        functionPanel.setBounds(0, 550, 600, 150);
+        JButton privateChatButton = new JButton("å‘èµ·ç§èŠ");
+        functionPanel.add(onlineListCombo);
+        functionPanel.add(privateChatButton);
+        onlineListCombo.setPreferredSize(new Dimension(100, 25));
+        functionPanel.add(exitButton);
+        functionPanel.add(sendButton);
+        exitButton.addActionListener(new ChatRoomExitListener());
+        sendButton.addActionListener(new ChatRoomSendListener());
+        panel.add(functionPanel);
 
-		privateChatButton.addActionListener(new PrivateChatListener());
+        privateChatButton.addActionListener(new PrivateChatListener());
 
-		setVisible(true);
+        setVisible(true);
 
-	}
+    }
 
-	public void toScreen(String nickName, String message)
-	{
-		ChatRoomUI.getInstance().getChatRecordTextArea().append(nickName + " £º " + message + "\n");
-		//¹ö¶¯Ìõ×Ô¶¯¸ú½ø
-		int height = 99999;
-		Point p = new Point();
-		p.setLocation(0, ChatRoomUI.getInstance().getChatRecordTextArea().getLineCount() * height);
-		ChatRoomUI.getInstance().getSp().getViewport().setViewPosition(p);
-	}
+    public void toScreen(String nickName, String message) {
+        ChatRoomUI.getInstance().getChatRecordTextArea().append(nickName + " ï¼š " + message + "\n");
+        //æ»šåŠ¨æ¡è‡ªåŠ¨è·Ÿè¿›
+        int height = 99999;
+        Point p = new Point();
+        p.setLocation(0, ChatRoomUI.getInstance().getChatRecordTextArea().getLineCount() * height);
+        ChatRoomUI.getInstance().getSp().getViewport().setViewPosition(p);
+    }
 
-	public static ChatRoomUI getInstance()
-	{
-		return ChatRoomUI.chatRoomUI;
-	}
+    public static ChatRoomUI getInstance() {
+        return ChatRoomUI.chatRoomUI;
+    }
 
-	public String getComboSelect()
-	{
-		return (String) onlineListCombo.getSelectedItem();
-	}
+    public String getComboSelect() {
+        return (String)onlineListCombo.getSelectedItem();
+    }
 
-	public static void init()
-	{
-		ChatRoomUI.chatRoomUI = new ChatRoomUI();
-	}
+    public static void init() {
+        ChatRoomUI.chatRoomUI = new ChatRoomUI();
+    }
 
-	public JTextArea getChatRecordTextArea()
-	{
-		return chatRecordTextArea;
-	}
+    public JTextArea getChatRecordTextArea() {
+        return chatRecordTextArea;
+    }
 
-	public void addItemToOnLineCombo(String newName)
-	{
-		onlineListCombo.addItem(newName);
-	}
+    public void addItemToOnLineCombo(String newName) {
+        onlineListCombo.addItem(newName);
+    }
 
-	public void removeItemFromOnLineCombo(String newName)
-	{
-		onlineListCombo.removeItem(newName);
-	}
+    public void removeItemFromOnLineCombo(String newName) {
+        onlineListCombo.removeItem(newName);
+    }
 
-	public void setChatRecordTextArea(JTextArea chatRecordTextArea)
-	{
-		this.chatRecordTextArea = chatRecordTextArea;
-	}
+    public void setChatRecordTextArea(JTextArea chatRecordTextArea) {
+        this.chatRecordTextArea = chatRecordTextArea;
+    }
 
-	public JTextArea getInputMessageTextArea()
-	{
-		return inputMessageTextArea;
-	}
+    public JTextArea getInputMessageTextArea() {
+        return inputMessageTextArea;
+    }
 
-	public void setInputMessageTextArea(JTextArea inputMessageTextArea)
-	{
-		this.inputMessageTextArea = inputMessageTextArea;
-	}
+    public void setInputMessageTextArea(JTextArea inputMessageTextArea) {
+        this.inputMessageTextArea = inputMessageTextArea;
+    }
 
-	public JComboBox<String> getOnlineListCombo()
-	{
-		return onlineListCombo;
-	}
+    public JComboBox<String> getOnlineListCombo() {
+        return onlineListCombo;
+    }
 
-	public void setOnlineListCombo(JComboBox<String> onlineListCombo)
-	{
-		this.onlineListCombo = onlineListCombo;
-	}
+    public void setOnlineListCombo(JComboBox<String> onlineListCombo) {
+        this.onlineListCombo = onlineListCombo;
+    }
 
-	public JScrollPane getSp()
-	{
-		return sp;
-	}
+    public JScrollPane getSp() {
+        return sp;
+    }
 
-	public void setSp(JScrollPane sp)
-	{
-		this.sp = sp;
-	}
+    public void setSp(JScrollPane sp) {
+        this.sp = sp;
+    }
 }

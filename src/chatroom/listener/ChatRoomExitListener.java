@@ -4,15 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 
-public class ChatRoomExitListener implements ActionListener 
-{
+public class ChatRoomExitListener implements ActionListener {
 
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println("ÍË³öÁÄÌìÊÒ");
-		System.exit(0);
-		
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("å…³é—­");
+        System.exit(0);
+    }
 
 }

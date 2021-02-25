@@ -8,23 +8,20 @@ import chatroom.ui.ChatRoomUI;
 import domain.ServerThread;
 import privatechat.ui.PrivateChatUI;
 
-public class PrivateChatListener implements ActionListener
-{
+public class PrivateChatListener implements ActionListener {
 
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-
-		if (ServerThread.getIntance().getServerNickName() == null) // ·şÎñ¶ËêÇ³ÆÎª¿Õ
-		{
-			System.out.println("Á¬½Ó¶Ë·¢ÆğË½ÁÄ´°¿Ú");
-		} else
-		{
-			System.out.println("·şÎñ¶Ë·¢ÆğË½ÁÄ´°¿Ú");
-		}
-		String nickName=ChatRoomUI.getInstance().getComboSelect();
-		if(!(nickName==null))
-			PrivateChatUI.newInstance(nickName);
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // æœåŠ¡ç«¯æ˜µç§°ä¸ºç©º
+        if (ServerThread.getIntance().getServerNickName() == null) {
+            System.out.println("è¿æ¥ç«¯å‘èµ·ç§èŠçª—å£");
+        } else {
+            System.out.println("æœåŠ¡ç«¯å‘èµ·ç§èŠçª—å£");
+        }
+        String nickName = ChatRoomUI.getInstance().getComboSelect();
+        if (nickName != null) {
+            PrivateChatUI.newInstance(nickName);
+        }
+    }
 
 }

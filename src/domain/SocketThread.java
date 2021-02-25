@@ -10,95 +10,84 @@ import privatechat.ui.PrivateChatUI;
 import utils.FileUtils;
 
 /**
- * ´¦ÀíÁ¬½Ó¶Ësocket Ïß³Ì ¼àÌıÁ¬½Ó¶Ë·¢ËÍµÄÏûÏ¢
- *
+ * å¤„ç†è¿æ¥ç«¯socket çº¿ç¨‹ ç›‘å¬è¿æ¥ç«¯å‘é€çš„æ¶ˆæ¯
  */
-public class SocketThread extends Thread
-{
-	private NameSocket socket;
+public class SocketThread extends Thread {
+    private NameSocket socket;
 
-	public SocketThread(NameSocket socket)
-	{
-		this.socket = socket;
-	}
+    public SocketThread(NameSocket socket) {
+        this.socket = socket;
+    }
 
-	@Override
-	public void run()
-	{
-		System.out.println("·şÎñ¶Ë£ºÒÑÎª" + socket.getName() + "¿ªÆô´¦ÀíÏß³Ì");
-		ChatRoomUI.getInstance().addItemToOnLineCombo(socket.getName());
-		ServerThread.getIntance().sendOnLineList();// ĞÂÁ¬½Óµ½À´£¬·¢ËÍÁĞ±í
-		try
-		{
-			InputStream is = socket.getSocket().getInputStream();
-			ServerThread serverThread = ServerThread.getIntance();
-			byte[] buf = null;
+    @Override
+    public void run() {
+        System.out.println("æœåŠ¡ç«¯ï¼šå·²ä¸º" + socket.getName() + "å¼€å¯å¤„ç†çº¿ç¨‹");
+        ChatRoomUI.getInstance().addItemToOnLineCombo(socket.getName());
+        // æ–°è¿æ¥åˆ°æ¥ï¼Œå‘é€åˆ—è¡¨
+        ServerThread.getIntance().sendOnLineList();
+        try {
+            InputStream is = socket.getSocket().getInputStream();
+            ServerThread serverThread = ServerThread.getIntance();
+            byte[] buf = null;
 
-			while (true)
-			{
-				buf = new byte[1024];
-				is.read(buf);
-				System.out.println("·şÎñ¶ËÊÕµ½ÏûÏ¢(" + new String(buf).trim() + ")");
-				if (new String(buf).trim().equals(""))
-				{
-					throw new IOException();
-				}
+            while (true) {
+                buf = new byte[1024];
+                is.read(buf);
+                System.out.println("æœåŠ¡ç«¯æ”¶åˆ°æ¶ˆæ¯(" + new String(buf).trim() + ")");
+                if (new String(buf).trim().equals("")) {
+                    throw new IOException();
+                }
 
-				String[] messages = new String(buf).trim().split("\r\n");
-				if (messages[0].equals("@MessageToAll@"))
-					serverThread.sendToAll(messages[1], messages[2]);
-				else if (messages[0].equals("@MessageToOne@"))
-				{
-					if (messages[1].equals(serverThread.getServerNickName()))// ½ÓÊÕµ½¶Ô·şÎñ¶ËµÄË½ÁÄÏûÏ¢
-					{
-						System.out.println("À´×Ô" + messages[2] + "µÄ" + messages[3]);
-						PrivateChatUI.newInstance(messages[2], messages[3]);
-					} else // Á¬½Ó¶Ë¶ÔÁ¬½Ó¶ËµÄË½ÁÄÏûÏ¢
-						serverThread.sendToOne(messages[1], messages[2], messages[3]);
-				} else if (messages[0].equals("@FileToOne@"))
-				{
-					if (messages[1].equals(serverThread.getServerNickName()))// ½ÓÊÕµ½¶Ô·şÎñ¶ËµÄË½ÁÄÏûÏ¢
-					{
-						System.out.println("À´×Ô" + messages[2] + "µÄ·¢ËÍÎÄ¼şÌáĞÑ" + messages[3] + "´óĞ¡" + messages[4]);
-						FileUtils.confirmRecFile(messages[2], messages[3], messages[4]);
-					} else
-					{
-						System.out.println("À´×Ô" + messages[1] + "µÄ·¢ËÍÎÄ¼şÌáĞÑ" + messages[3] + "´óĞ¡" + messages[4]);
+                String[] messages = new String(buf).trim().split("\r\n");
+                if ("@MessageToAll@".equals(messages[0])) {
+                    serverThread.sendToAll(messages[1], messages[2]);
+                } else if ("@MessageToOne@".equals(messages[0])) {
+                    // æ¥æ”¶åˆ°å¯¹æœåŠ¡ç«¯çš„ç§èŠæ¶ˆæ¯
+                    if (messages[1].equals(serverThread.getServerNickName())) {
+                        System.out.println("æ¥è‡ª" + messages[2] + "çš„" + messages[3]);
+                        PrivateChatUI.newInstance(messages[2], messages[3]);
+                    } else {// è¿æ¥ç«¯å¯¹è¿æ¥ç«¯çš„ç§èŠæ¶ˆæ¯
+                        serverThread.sendToOne(messages[1], messages[2], messages[3]);
+                    }
+                } else if ("@FileToOne@".equals(messages[0])) {
+                    // æ¥æ”¶åˆ°å¯¹æœåŠ¡ç«¯çš„ç§èŠæ¶ˆæ¯
+                    if (messages[1].equals(serverThread.getServerNickName())) {
+                        System.out.println("æ¥è‡ª" + messages[2] + "çš„å‘é€æ–‡ä»¶æé†’" + messages[3] + "å¤§å°" + messages[4]);
+                        FileUtils.confirmRecFile(messages[2], messages[3], messages[4]);
+                    } else {
+                        System.out.println("æ¥è‡ª" + messages[1] + "çš„å‘é€æ–‡ä»¶æé†’" + messages[3] + "å¤§å°" + messages[4]);
 
-						serverThread.sendFileMessage(messages[1], socket.getName(), messages[3], messages[4]);
-					}
-				} else if (messages[0].equals("@SendFileResponse@"))
-				{
-					if (messages[2].equals(serverThread.getServerNickName()))// ½ÓÊÕµ½¶Ô·şÎñ¶ËµÄÎÄ¼ş»Ø¸´ÏûÏ¢
-					{
-						if (messages[1].equals("true"))
-						{
-							System.out.println("¶Ô·½Í¬Òâ½ÓÊÕÎÄ¼ş£¬·µ»Øip:" + messages[3]);
-							FileUtils.sendFile(messages[3]);
-						} else if (messages[1].equals("false"))
-						{
-							System.out.println("¶Ô·½¾Ü¾ø½ÓÊÕÎÄ¼ş");
-							JOptionPane.showMessageDialog(null, "¶Ô·½¾Ü¾ø½ÓÊÕÎÄ¼ş", "ÌáÊ¾", 1);
-						}
-					} else
-					{
-						if (messages[3] == null)
-							serverThread.sendFileResponse(messages[2], messages[1]);
-						else
-							serverThread.sendFileResponse(messages[2], messages[1] , messages[3]);
-					}
-				}
-			}
-		} catch (IOException e)
-		{
-			System.out.println("SocketThread.run+Á¬½Ó¶ËÁ¬½Ó¶Ï¿ª+´Ësocket´¦ÀíÏß³Ì½áÊø");
+                        serverThread.sendFileMessage(messages[1], socket.getName(), messages[3], messages[4]);
+                    }
+                } else if ("@SendFileResponse@".equals(messages[0])) {
+                    // æ¥æ”¶åˆ°å¯¹æœåŠ¡ç«¯çš„æ–‡ä»¶å›å¤æ¶ˆæ¯
+                    if (messages[2].equals(serverThread.getServerNickName())) {
+                        if ("true".equals(messages[1])) {
+                            System.out.println("å¯¹æ–¹åŒæ„æ¥æ”¶æ–‡ä»¶ï¼Œè¿”å›ip:" + messages[3]);
+                            FileUtils.sendFile(messages[3]);
+                        } else if ("false".equals(messages[1])) {
+                            System.out.println("å¯¹æ–¹æ‹’ç»æ¥æ”¶æ–‡ä»¶");
+                            JOptionPane.showMessageDialog(null, "å¯¹æ–¹æ‹’ç»æ¥æ”¶æ–‡ä»¶", "æç¤º", 1);
+                        }
+                    } else {
+                        if (messages[3] == null) {
+                            serverThread.sendFileResponse(messages[2], messages[1]);
+                        } else {
+                            serverThread.sendFileResponse(messages[2], messages[1], messages[3]);
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("SocketThread.run+è¿æ¥ç«¯è¿æ¥æ–­å¼€+æ­¤socketå¤„ç†çº¿ç¨‹ç»“æŸ");
 
-			ChatRoomUI.getInstance().removeItemFromOnLineCombo(socket.getName());
-			ServerThread serverThread = ServerThread.getIntance();
-			serverThread.getSockets().remove(socket);
-			serverThread.sendOnLineList();// ¸ÃÁ¬½Ó¶Ï¿ª£¬·¢ËÍÁĞ±í
-			// e.printStackTrace();
-		}
+            ChatRoomUI.getInstance().removeItemFromOnLineCombo(socket.getName());
+            ServerThread serverThread = ServerThread.getIntance();
+            serverThread.getSockets().remove(socket);
+            // è¯¥è¿æ¥æ–­å¼€ï¼Œå‘é€åˆ—è¡¨
+            serverThread.sendOnLineList();
+            // e.printStackTrace();
+        }
 
-	}
+    }
 }

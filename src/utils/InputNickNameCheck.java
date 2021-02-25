@@ -1,57 +1,49 @@
 package utils;
 
 
-
 import javax.swing.JOptionPane;
 
 import domain.ClientThread;
 import domain.NameSocket;
 import selectroom.ui.SelectRoomUI;
 
-public class InputNickNameCheck
-{
+public class InputNickNameCheck {
 
-	/**
-	 * Ïò·şÎñ¶ËÈ·ÈÏêÇ³ÆÊÇ·ñÖØ¸´
-	 * 
-	 * @return êÇ³Æ
-	 */
-	public static String nickCheck(NameSocket socket)
-	{
-		try
-		{
-			String nickName;
-			while (true)
-			{
-				nickName = JOptionPane.showInputDialog(SelectRoomUI.getInstance(), "ÇëÊäÈëêÇ³Æ", "ÌáÊ¾", 1);
-				
-				if(nickName==null)
-					System.exit(0);
-				else if(nickName.equals(""))
-					continue;
-				System.out.println("êÇ³Æ£º" + nickName);
-				
-				socket.sendMessage("@NickName@\r\n" + nickName);
-				byte[] buf = new byte[1024];
-				socket.getSocket().getInputStream().read(buf);
-				// Ïò·şÎñ¶Ë·¢ËÍÊı¾İ£¬·şÎñ¶Ë·µ»Ø1ÔòÍ¨¹ı
-				if(new String(buf).trim().equals("1"))
-				{
-					System.out.println("Í¨¹ı");
-					break;
-				}
-				else
-				{
-					System.out.println("¸ÃêÇ³ÆÒÑ´æÔÚ");
-					JOptionPane.showMessageDialog(SelectRoomUI.getInstance(), "¸ÃêÇ³ÆÒÑ´æÔÚ£¬ÇëÖØĞÂÊäÈë", "ÌáÊ¾", 0);
-				}
-			}
-			ClientThread.getInstance().setClientName(nickName);
-		} catch (Exception e)
-		{
-			// TODO: handle exception
-		}
+    /**
+     * å‘æœåŠ¡ç«¯ç¡®è®¤æ˜µç§°æ˜¯å¦é‡å¤
+     *
+     * @return æ˜µç§°
+     */
+    public static String nickCheck(NameSocket socket) {
+        try {
+            String nickName;
+            while (true) {
+                nickName = JOptionPane.showInputDialog(SelectRoomUI.getInstance(), "è¯·è¾“å…¥æ˜µç§°", "æç¤º", 1);
 
-		return "";
-	}
+                if (nickName == null) {
+                    System.exit(0);
+                } else if (nickName.equals("")) {
+                    continue;
+                }
+                System.out.println("æ˜µç§°ï¼š" + nickName);
+
+                socket.sendMessage("@NickName@\r\n" + nickName);
+                byte[] buf = new byte[1024];
+                socket.getSocket().getInputStream().read(buf);
+                // å‘æœåŠ¡ç«¯å‘é€æ•°æ®ï¼ŒæœåŠ¡ç«¯è¿”å›1åˆ™é€šè¿‡
+                if (new String(buf).trim().equals("1")) {
+                    System.out.println("é€šè¿‡");
+                    break;
+                } else {
+                    System.out.println("è¯¥æ˜µç§°å·²å­˜åœ¨");
+                    JOptionPane.showMessageDialog(SelectRoomUI.getInstance(), "è¯¥æ˜µç§°å·²å­˜åœ¨ï¼Œè¯·é‡æ–°è¾“å…¥", "æç¤º", 0);
+                }
+            }
+            ClientThread.getInstance().setClientName(nickName);
+        } catch (Exception e) {
+            // handle exception
+        }
+
+        return "";
+    }
 }

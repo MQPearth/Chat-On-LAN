@@ -10,31 +10,29 @@ import domain.ServerThread;
 import selectroom.ui.SelectRoomUI;
 
 
-public class CreateRoom implements ActionListener
-{
+public class CreateRoom implements ActionListener {
 
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println("´´½¨·¿¼ä");
-		SelectRoomUI.getInstance().dispose();
-		String serverName;
-		
-		while(true)
-		{
-			serverName=JOptionPane.showInputDialog(SelectRoomUI.getInstance(), "ÇëÊäÈëêÇ³Æ", "ÌáÊ¾", 1);
-			if(serverName==null)
-				System.exit(0);
-			else if(serverName.equals(""))
-				continue;
-			else
-				break;
-		}
-		
-		System.out.println("·şÎñ¶ËêÇ³Æ"+serverName);
-		ServerThread.getIntance().setNickName(serverName);
-		ChatRoomUI.init(); //³õÊ¼»¯ÁÄÌìÊÒ
-		ServerThread.getIntance().start();//·şÎñ¶ËÏß³ÌÆô¶¯
-	}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("åˆ›å»ºæˆ¿é—´");
+        SelectRoomUI.getInstance().dispose();
+        String serverName;
+
+        while (true) {
+            serverName = JOptionPane.showInputDialog(SelectRoomUI.getInstance(), "è¯·è¾“å…¥æ˜µç§°", "æç¤º", 1);
+            if (serverName == null) {
+                System.exit(0);
+            } else {
+                break;
+            }
+        }
+
+        System.out.println("æœåŠ¡ç«¯æ˜µç§°" + serverName);
+        ServerThread.getIntance().setNickName(serverName);
+        //åˆå§‹åŒ–èŠå¤©å®¤
+        ChatRoomUI.init();
+        //æœåŠ¡ç«¯çº¿ç¨‹å¯åŠ¨
+        ServerThread.getIntance().start();
+    }
 
 }

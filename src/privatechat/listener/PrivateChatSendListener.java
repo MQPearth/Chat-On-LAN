@@ -12,49 +12,46 @@ import domain.ServerThread;
 import privatechat.ui.PrivateChatUI;
 
 
-public class PrivateChatSendListener implements ActionListener
-{
-	private String title;
-	private JTextArea inputMessageTextArea;
-	private JTextArea chatRecordTextArea;
-	private PrivateChatUI privateChatUI;
-	public PrivateChatSendListener(String title,JTextArea inputMessageTextArea,JTextArea chatRecordTextArea,PrivateChatUI privateChatUI)
-	{
-		
-		this.privateChatUI=privateChatUI;
-		this.title=privateChatUI.getTitleUser();
-		this.inputMessageTextArea=privateChatUI.getInputMessageTextArea();
-		this.chatRecordTextArea=privateChatUI.getChatRecordTextArea();
-	}
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println("·¢ËÍË½ÁÄÏûÏ¢");
-		String message = inputMessageTextArea.getText().replaceAll("\r\n", "\n");
-		
-		if (message == null || message.equals(""))
-		{
-			JOptionPane.showMessageDialog(chatRecordTextArea, "ÊäÈë²»ÄÜÎª¿Õ", "´íÎó", 0);
-			return;
-		}
-		if (ServerThread.getIntance().getServerNickName() == null) // ·şÎñ¶ËêÇ³ÆÎª¿Õ
-		{
-			System.out.println("Á¬½Ó¶Ë·¢ËÍË½ÁÄÏûÏ¢");
-			ClientThread.getInstance().send("@MessageToOne@\r\n"+title+"\r\n"+ClientThread.getInstance().getClientName()+"\r\n",message);
-			//chatRecordTextArea.append(ClientThread.getInstance().getClientName()+":"+message+"\r\n");
-			privateChatUI.toScreen(ClientThread.getInstance().getClientName(), message);
-			
-		
-		} else
-		{
-			//·şÎñ¶ÈË½ÁÄÃ»ÓĞ½«´°¿Úadd
-			System.out.println("·şÎñ¶Ë·¢ËÍË½ÁÄÏûÏ¢");
-			ServerThread.getIntance().sendToOne(title,ServerThread.getIntance().getServerNickName(), message);
-			//chatRecordTextArea.append(ServerThread.getIntance().getServerNickName()+":"+message+"\r\n");
-			privateChatUI.toScreen(ServerThread.getIntance().getServerNickName(), message);
-		}
-		privateChatUI.getInputMessageTextArea().setText("");
-		
-	}
+public class PrivateChatSendListener implements ActionListener {
+    private String title;
+    private JTextArea inputMessageTextArea;
+    private JTextArea chatRecordTextArea;
+    private PrivateChatUI privateChatUI;
+
+    public PrivateChatSendListener(String title, JTextArea inputMessageTextArea, JTextArea chatRecordTextArea, PrivateChatUI privateChatUI) {
+
+        this.privateChatUI = privateChatUI;
+        this.title = privateChatUI.getTitleUser();
+        this.inputMessageTextArea = privateChatUI.getInputMessageTextArea();
+        this.chatRecordTextArea = privateChatUI.getChatRecordTextArea();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("å‘é€ç§èŠæ¶ˆæ¯");
+        String message = inputMessageTextArea.getText().replaceAll("\r\n", "\n");
+
+        if ("".equals(message)) {
+            JOptionPane.showMessageDialog(chatRecordTextArea, "è¾“å…¥ä¸èƒ½ä¸ºç©º", "é”™è¯¯", 0);
+            return;
+        }
+        // æœåŠ¡ç«¯æ˜µç§°ä¸ºç©º
+        if (ServerThread.getIntance().getServerNickName() == null) {
+            System.out.println("è¿æ¥ç«¯å‘é€ç§èŠæ¶ˆæ¯");
+            ClientThread.getInstance().send("@MessageToOne@\r\n" + title + "\r\n" + ClientThread.getInstance().getClientName() + "\r\n", message);
+            //chatRecordTextArea.append(ClientThread.getInstance().getClientName()+":"+message+"\r\n");
+            privateChatUI.toScreen(ClientThread.getInstance().getClientName(), message);
+
+
+        } else {
+            //æœåŠ¡åº¦ç§èŠæ²¡æœ‰å°†çª—å£add
+            System.out.println("æœåŠ¡ç«¯å‘é€ç§èŠæ¶ˆæ¯");
+            ServerThread.getIntance().sendToOne(title, ServerThread.getIntance().getServerNickName(), message);
+            //chatRecordTextArea.append(ServerThread.getIntance().getServerNickName()+":"+message+"\r\n");
+            privateChatUI.toScreen(ServerThread.getIntance().getServerNickName(), message);
+        }
+        privateChatUI.getInputMessageTextArea().setText("");
+
+    }
 
 }

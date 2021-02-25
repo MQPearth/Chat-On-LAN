@@ -22,227 +22,208 @@ import domain.ClientThread;
 import domain.ServerThread;
 import privatechat.listener.PrivateChatSendFileListener;
 
-public class FileUtils
-{
-	private static long recFileSize; // ½«½ÓÊÕÎÄ¼şµÄ´óĞ¡
+public class FileUtils {
+    /**
+     * å°†æ¥æ”¶æ–‡ä»¶çš„å¤§å°
+     */
+    private static long recFileSize;
 
-	// ½«ÎÄ¼şµÄ×Ö½Ú×ª»»ÎªMb
-	public static String sizetoMb(String fileSizeStr)
-	{
+    // å°†æ–‡ä»¶çš„å­—èŠ‚è½¬æ¢ä¸ºMb
+    public static String sizetoMb(String fileSizeStr) {
 
-		long fileSize = new Double(fileSizeStr).longValue();
-		double size = (fileSize / (1024.0 * 1024));
-		int temp = (int) (size * 1000);
-		size = temp / 1000.0;
-		return size + "";
-	}
+        long fileSize = new Double(fileSizeStr).longValue();
+        double size = (fileSize / (1024.0 * 1024));
+        int temp = (int)(size * 1000);
+        size = temp / 1000.0;
+        return size + "";
+    }
 
-	/**
-	 * 
-	 * @param fromUser
-	 *            ´ÓÓÃ»§êÇ³Æ
-	 * @param fileName
-	 *            ÎÄ¼şÃû
-	 * @param fileSize
-	 *            ÎÄ¼ş´óĞ¡
-	 */
-	public static void confirmRecFile(String fromUser, String fileName, String fileSize)
-	{
-		int option = JOptionPane.showConfirmDialog(null,
-				"ÊÇ·ñ ½ÓÊÕÀ´×Ô<" + fromUser + ">·¢ËÍµÄ<" + fileName + ">,´óĞ¡Îª< " + sizetoMb(fileSize) + " Mb>");
-		boolean recFile = false;// ÊÇ·ñ½ÓÊÕÎÄ¼ş
+    /**
+     * @param fromUser ä»ç”¨æˆ·æ˜µç§°
+     * @param fileName æ–‡ä»¶å
+     * @param fileSize æ–‡ä»¶å¤§å°
+     */
+    public static void confirmRecFile(String fromUser, String fileName, String fileSize) {
+        int option = JOptionPane.showConfirmDialog(null,
+                "æ˜¯å¦ æ¥æ”¶æ¥è‡ª<" + fromUser + ">å‘é€çš„<" + fileName + ">,å¤§å°ä¸º< " + sizetoMb(fileSize) + " Mb>");
+        // æ˜¯å¦æ¥æ”¶æ–‡ä»¶
+        boolean recFile = false;
 
-		if (JOptionPane.OK_OPTION == option)
-		{
-			System.out.println("½ÓÊÕÎÄ¼ş");
-			recFile = true;
-			FileUtils.recFileSize = new Double(fileSize).longValue();
-		} else if (JOptionPane.NO_OPTION == option)
-		{
-			System.out.println("¾Ü¾ø½ÓÊÕÎÄ¼ş");
-		} else if (JOptionPane.CANCEL_OPTION == option)
-		{
-			System.out.println("È¡Ïû¶Ô»°¿ò");
-		}
+        if (JOptionPane.OK_OPTION == option) {
+            System.out.println("æ¥æ”¶æ–‡ä»¶");
+            recFile = true;
+            FileUtils.recFileSize = new Double(fileSize).longValue();
+        } else if (JOptionPane.NO_OPTION == option) {
+            System.out.println("æ‹’ç»æ¥æ”¶æ–‡ä»¶");
+        } else if (JOptionPane.CANCEL_OPTION == option) {
+            System.out.println("å–æ¶ˆå¯¹è¯æ¡†");
+        }
+        // æ¥æ”¶æ–‡ä»¶
+        if (recFile) {
+            // æœåŠ¡ç«¯æ˜µç§°ä¸ºç©º
+            if (ServerThread.getIntance().getServerNickName() == null) {
+                // è¿æ¥ç«¯
+                ClientThread.getInstance().send("@SendFileResponse@\r\n",
+                        "true\r\n" + fromUser + "\r\n" + IPUtils.getLocalIP() + "\r\n");
+            } else {
+                ServerThread.getIntance().sendFileResponse(fromUser, "true", IPUtils.getLocalIP());
+            }
+            FileUtils.recFile();
+        } else {
+            // æ‹’ç»æ¥æ”¶
+            // æœåŠ¡ç«¯æ˜µç§°ä¸ºç©º
+            if (ServerThread.getIntance().getServerNickName() == null) {
+                // è¿æ¥ç«¯
+                ClientThread.getInstance().send("@SendFileResponse@\r\n", "false\r\n" + fromUser);
+            } else {
+                ServerThread.getIntance().sendFileResponse(fromUser, "false");
+            }
+        }
 
-		if (recFile)// ½ÓÊÕÎÄ¼ş
-		{
-			if (ServerThread.getIntance().getServerNickName() == null) // ·şÎñ¶ËêÇ³ÆÎª¿Õ
-			{// Á¬½Ó¶Ë
-				ClientThread.getInstance().send("@SendFileResponse@\r\n",
-						"true\r\n" + fromUser + "\r\n" + IPUtils.getLocalIP() + "\r\n");
-			} else
-			{
-				ServerThread.getIntance().sendFileResponse(fromUser, "true", IPUtils.getLocalIP());
-			}
-			FileUtils.recFile();
-		} else // ¾Ü¾ø½ÓÊÕ
-		{
-			if (ServerThread.getIntance().getServerNickName() == null) // ·şÎñ¶ËêÇ³ÆÎª¿Õ
-			{// Á¬½Ó¶Ë
-				ClientThread.getInstance().send("@SendFileResponse@\r\n", "false\r\n" + fromUser);
-			} else
-			{
-				ServerThread.getIntance().sendFileResponse(fromUser, "false");
-			}
-		}
+    }
 
-	}
+    public static void sendFile(final String ip) {
 
-	public static void sendFile(final String ip)
-	{
+        new Thread() {
+            @Override
+            public void run() {
 
-		new Thread()
-		{
-			@Override
-			public void run()
-			{
+                int length = 0;
+                byte[] sendByte = null;
+                Socket socket = null;
+                DataOutputStream dout = null;
+                FileInputStream fin = null;
+                try {
+                    // å·²å‘é€æ•°æ®çš„å¤§å°
+                    long count = 0;
+                    JLabel label = showProgress(ChatRoomUI.getInstance());
+                    try {
+                        socket = new Socket();
+                        // æŒ‡å®šè¶…æ—¶
+                        socket.connect(new InetSocketAddress(ip, 12346), 10 * 1000);
+                        socket.setKeepAlive(true);
+                        System.out.println("è¿æ¥åˆ°ç›®æ ‡ip");
+                        dout = new DataOutputStream(socket.getOutputStream());
+                        // è·å–é€‰æ‹©çš„æ–‡ä»¶
+                        File file = PrivateChatSendFileListener.file;
+                        fin = new FileInputStream(file);
+                        sendByte = new byte[1024];
+                        dout.writeUTF(file.getName());
+                        while ((length = fin.read(sendByte, 0, sendByte.length)) > 0) {
+                            dout.write(sendByte, 0, length);
+                            dout.flush();
+                            count = count + length;
+                            label.setText("å‘é€è¿›åº¦:" + count + "  /  " + file.length() + "  å­—èŠ‚");
+                            System.out.println("å‘é€äº†" + length);
+                        }
+                    } catch (Exception e) {
+                        // java Connection reset by peer: socket write error
+                        e.printStackTrace();
+                        JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "å‘é€é”™è¯¯" + e.getMessage(), "é”™è¯¯", 0);
+                    } finally {
+                        if (dout != null) {
+                            dout.close();
+                        }
+                        if (fin != null) {
+                            fin.close();
+                        }
+                        if (socket != null) {
+                            socket.close();
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                System.out.println("ç»“æŸå‘é€");
+            }
+        }.start();
+    }
 
-				int length = 0;
-				byte[] sendByte = null;
-				Socket socket = null;
-				DataOutputStream dout = null;
-				FileInputStream fin = null;
-				try
-				{
-					long count = 0;// ÒÑ·¢ËÍÊı¾İµÄ´óĞ¡
-					JLabel label = showProgress(ChatRoomUI.getInstance());
-					try
-					{
-						socket = new Socket();
-						socket.connect(new InetSocketAddress(ip, 12346), 10 * 1000);// Ö¸¶¨³¬Ê±
-						socket.setKeepAlive(true);
-						System.out.println("Á¬½Óµ½Ä¿±êip");
-						dout = new DataOutputStream(socket.getOutputStream());
-						File file = PrivateChatSendFileListener.file; // »ñÈ¡Ñ¡ÔñµÄÎÄ¼ş
-						fin = new FileInputStream(file);
-						sendByte = new byte[1024];
-						dout.writeUTF(file.getName());
-						while ((length = fin.read(sendByte, 0, sendByte.length)) > 0)
-						{
-							dout.write(sendByte, 0, length);
-							dout.flush();
-							count = count + length;
-							label.setText("·¢ËÍ½ø¶È:" + count + "  /  " + file.length() + "  ×Ö½Ú");
-							System.out.println("·¢ËÍÁË" + length);
-						}
-					} catch (Exception e)
-					{
-						// java Connection reset by peer: socket write error
-						e.printStackTrace();
-						JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "·¢ËÍ´íÎó" + e.getMessage(), "´íÎó", 0);
-					} finally
-					{
-						if (dout != null)
-							dout.close();
-						if (fin != null)
-							fin.close();
-						if (socket != null)
-							socket.close();
-					}
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-				System.out.println("½áÊø·¢ËÍ");
-			}
-		}.start();
-	}
+    public static void recFile() {
 
-	public static void recFile()
-	{
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    System.out.println("å¼€å§‹ç›‘å¬ã€‚ã€‚ã€‚");
+                    final ServerSocket server = new ServerSocket(12346);
+                    Socket socket = server.accept();
+                    // å·²æ¥æ”¶æ•°æ®çš„å¤§å°
+                    long count = 0;
+                    JLabel label = showProgress(ChatRoomUI.getInstance());
+                    byte[] inputByte = null;
+                    int length = 0;
+                    DataInputStream din = null;
+                    FileOutputStream fout = null;
+                    try {
+                        din = new DataInputStream(socket.getInputStream());
+                        String fileName = din.readUTF();
+                        System.out.println("test" + fileName);
 
-		new Thread()
-		{
-			public void run()
-			{
-				try
-				{
-					System.out.println("¿ªÊ¼¼àÌı¡£¡£¡£");
-					final ServerSocket server = new ServerSocket(12346);
-					Socket socket = server.accept();
+                        File file = new File("C:\\ChatRoom_RecFile\\");
 
-					long count = 0;// ÒÑ½ÓÊÕÊı¾İµÄ´óĞ¡
-					JLabel label = showProgress(ChatRoomUI.getInstance());
-					byte[] inputByte = null;
-					int length = 0;
-					DataInputStream din = null;
-					FileOutputStream fout = null;
-					try
-					{
-						din = new DataInputStream(socket.getInputStream());
-						String fileName = din.readUTF();
-						System.out.println("test" + fileName);
+                        if (!file.exists())
+                            file.mkdir();
 
-						File file = new File("C:\\ChatRoom_RecFile\\");
+                        file = new File("C:\\ChatRoom_RecFile\\" + fileName);
+                        int i = 1;
+                        while (file.exists()) {
+                            file = new File("C:\\ChatRoom_RecFile\\" + "å‰¯æœ¬" + i + fileName);
+                            i++;
+                        }
+                        fout = new FileOutputStream(file);
+                        inputByte = new byte[1024];
+                        System.out.println("å¼€å§‹æ¥æ”¶æ–‡ä»¶æ•°æ®...");
+                        while (true) {
+                            if (din != null) {
+                                length = din.read(inputByte, 0, inputByte.length);
+                            }
+                            if (length == -1) {
+                                break;
+                            }
+                            System.out.println(length);
+                            fout.write(inputByte, 0, length);
+                            fout.flush();
+                            count = count + length;
+                            label.setText("æ¥æ”¶è¿›åº¦:" + count + "  /  " + FileUtils.recFileSize + "  å­—èŠ‚");
+                        }
+                        System.out.println("å®Œæˆæ¥æ”¶");
+                        JOptionPane.showMessageDialog(null, "æ–‡ä»¶ä¿å­˜åœ¨" + file.getAbsolutePath(), "æ–‡ä»¶å·²æ¥æ”¶", 1);
 
-						if (!file.exists())
-							file.mkdir();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(null, "æ¥æ”¶é”™è¯¯" + ex.getMessage(), "é”™è¯¯", 1);
+                    } finally {
+                        if (fout != null) {
+                            fout.close();
+                        }
+                        if (din != null) {
+                            din.close();
+                        }
+                        if (socket != null) {
+                            socket.close();
+                        }
+                        server.close();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
 
-						file = new File("C:\\ChatRoom_RecFile\\" + fileName);
-						int i = 1;
-						while (file.exists())
-						{
-							file = new File("C:\\ChatRoom_RecFile\\" + "¸±±¾" + i + fileName);
-							i++;
-						}
-						fout = new FileOutputStream(file);
-						inputByte = new byte[1024];
-						System.out.println("¿ªÊ¼½ÓÊÕÎÄ¼şÊı¾İ...");
-						while (true)
-						{
-							if (din != null)
-							{
-								length = din.read(inputByte, 0, inputByte.length);
-							}
-							if (length == -1)
-							{
-								break;
-							}
-							System.out.println(length);
-							fout.write(inputByte, 0, length);
-							fout.flush();
-							count = count + length;
-							label.setText("½ÓÊÕ½ø¶È:" + count + "  /  " + FileUtils.recFileSize + "  ×Ö½Ú");
-						}
-						System.out.println("Íê³É½ÓÊÕ");
-						JOptionPane.showMessageDialog(null, "ÎÄ¼ş±£´æÔÚ" + file.getAbsolutePath(), "ÎÄ¼şÒÑ½ÓÊÕ", 1);
+    public static JLabel showProgress(JFrame frame) {
+        JDialog dialog = new JDialog(frame, "è¿›åº¦", false);
 
-					} catch (Exception ex)
-					{
-						ex.printStackTrace();
-						JOptionPane.showMessageDialog(null, "½ÓÊÕ´íÎó" + ex.getMessage(), "´íÎó", 1);
-					} finally
-					{
-						if (fout != null)
-							fout.close();
-						if (din != null)
-							din.close();
-						if (socket != null)
-							socket.close();
-						server.close();
-					}
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
-			};
-		}.start();
-	}
+        JLabel label = new JLabel();
+        label.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 20));
+        dialog.setSize(400, 100);
+        dialog.setLocation(400, 400);
+        dialog.setLayout(new GridLayout(1, 1));
+        dialog.add(label);
 
-	public static JLabel showProgress(JFrame frame)
-	{
-		JDialog dialog = new JDialog(frame, "½ø¶È", false);
-
-		JLabel label = new JLabel();
-		label.setFont(new Font("Î¢ÈíÑÅºÚ", 0, 20));
-		dialog.setSize(400, 100);
-		dialog.setLocation(400, 400);
-		dialog.setLayout(new GridLayout(1, 1));
-		dialog.add(label);
-
-		dialog.setVisible(true);
-		return label;
-	}
+        dialog.setVisible(true);
+        return label;
+    }
 
 }

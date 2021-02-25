@@ -26,201 +26,211 @@ import privatechat.listener.PrivateChatExitListener;
 import privatechat.listener.PrivateChatSendFileListener;
 import privatechat.listener.PrivateChatSendListener;
 
-public class PrivateChatUI extends JFrame
-{
-	private static final long serialVersionUID = 1L;
-	private JTextArea chatRecordTextArea = new JTextArea(); // ÁÄÌì¼ÇÂ¼
-	private JTextArea inputMessageTextArea = new JTextArea();// ÏûÏ¢ÊäÈë¿ò
-	private JScrollPane sp=null; //ÁÄÌì¼ÇÂ¼¹ö¶¯Ãæ°å
-	private JButton exitButton = new JButton("¹Ø±ÕË½ÁÄ");// ÍË³ö°´Å¥
-	private JButton sendButton = new JButton("·¢ËÍ");// ·¢ËÍ°´Å¥
-	private JButton sendFileButton = new JButton("·¢ËÍÎÄ¼ş");// ·¢ËÍ°´Å¥
-	private String title; // ´°¿Ú±êÌâ
-	public static HashMap<String, PrivateChatUI> privateChatUIs = new HashMap<>();// Ë½ÁÄ´°¿Ú
+public class PrivateChatUI extends JFrame {
+    private static final long serialVersionUID = 1L;
+    /**
+     * èŠå¤©è®°å½•
+     */
+    private JTextArea chatRecordTextArea = new JTextArea();
+    /**
+     * æ¶ˆæ¯è¾“å…¥æ¡†
+     */
+    private JTextArea inputMessageTextArea = new JTextArea();
+    /**
+     * èŠå¤©è®°å½•æ»šåŠ¨é¢æ¿
+     */
+    private JScrollPane sp = null;
+    /**
+     * é€€å‡ºæŒ‰é’®
+     */
+    private JButton exitButton = new JButton("å…³é—­ç§èŠ");
+    /**
+     * å‘é€æŒ‰é’®
+     */
+    private JButton sendButton = new JButton("å‘é€");
+    /**
+     * å‘é€æŒ‰é’®
+     */
+    private JButton sendFileButton = new JButton("å‘é€æ–‡ä»¶");
+    /**
+     * çª—å£æ ‡é¢˜
+     */
+    private String title;
+    /**
+     * ç§èŠçª—å£
+     */
+    public static HashMap<String, PrivateChatUI> privateChatUIs = new HashMap<>();
 
-	public PrivateChatUI(String title)
-	{
-		this.title = title;
-		setTitle("Óë  " + title + "  µÄ¶Ô»°");
-		setBounds(490, 150, 605, 650);
-		setResizable(false);
+    public PrivateChatUI(String title) {
+        this.title = title;
+        setTitle("ä¸  " + title + "  çš„å¯¹è¯");
+        setBounds(490, 150, 605, 650);
+        setResizable(false);
 
-		JPanel panel = new JPanel();
-		setContentPane(panel);
-		panel.setLayout(null);
+        JPanel panel = new JPanel();
+        setContentPane(panel);
+        panel.setLayout(null);
 
-		JPanel chatRecordPanel = new JPanel();
-		chatRecordPanel.setLayout(new GridLayout(1, 1));
-		chatRecordPanel.setBorder(BorderFactory.createLineBorder(Color.black));
-		chatRecordPanel.setBounds(0, 0, 599, 400);
-		sp= new JScrollPane(chatRecordTextArea);
-		chatRecordTextArea.setMargin(new Insets(10, 10, 10, 10));//ÎÄ±¾ÓëÎÄ±¾ÓòµÄ±ß¾à
-		chatRecordTextArea.setEditable(false);//²»¿É±à¼­
-		chatRecordTextArea.setLineWrap(true);
-		chatRecordTextArea.setFont(new Font("Î¢ÈíÑÅºÚ", 0, 16));	
-		chatRecordTextArea.setFocusable(false);
-		chatRecordPanel.add(sp);
-		panel.add(chatRecordPanel);
+        JPanel chatRecordPanel = new JPanel();
+        chatRecordPanel.setLayout(new GridLayout(1, 1));
+        chatRecordPanel.setBorder(BorderFactory.createLineBorder(Color.black));
+        chatRecordPanel.setBounds(0, 0, 599, 400);
+        sp = new JScrollPane(chatRecordTextArea);
+        //æ–‡æœ¬ä¸æ–‡æœ¬åŸŸçš„è¾¹è·
+        chatRecordTextArea.setMargin(new Insets(10, 10, 10, 10));
+        //ä¸å¯ç¼–è¾‘
+        chatRecordTextArea.setEditable(false);
+        chatRecordTextArea.setLineWrap(true);
+        chatRecordTextArea.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));
+        chatRecordTextArea.setFocusable(false);
+        chatRecordPanel.add(sp);
+        panel.add(chatRecordPanel);
 
-		JPanel inputMessagePanel = new JPanel();
-		inputMessagePanel.setLayout(new GridLayout(1, 1));
-		inputMessagePanel.setBounds(0, 400, 600, 150);
-		inputMessageTextArea.setLineWrap(true);
-		inputMessageTextArea.setFont(new Font("Î¢ÈíÑÅºÚ", 0, 16));
-		inputMessagePanel.add(inputMessageTextArea);
-		panel.add(inputMessagePanel);
+        JPanel inputMessagePanel = new JPanel();
+        inputMessagePanel.setLayout(new GridLayout(1, 1));
+        inputMessagePanel.setBounds(0, 400, 600, 150);
+        inputMessageTextArea.setLineWrap(true);
+        inputMessageTextArea.setFont(new Font("å¾®è½¯é›…é»‘", Font.PLAIN, 16));
+        inputMessagePanel.add(inputMessageTextArea);
+        panel.add(inputMessagePanel);
 
-		JPanel functionPanel = new JPanel();
-		functionPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 20));
-		functionPanel.setBounds(0, 550, 600, 150);
+        JPanel functionPanel = new JPanel();
+        functionPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 20));
+        functionPanel.setBounds(0, 550, 600, 150);
 
-		functionPanel.add(sendFileButton);
-		functionPanel.add(exitButton);
-		functionPanel.add(sendButton);
+        functionPanel.add(sendFileButton);
+        functionPanel.add(exitButton);
+        functionPanel.add(sendButton);
 
-		sendFileButton.addActionListener(new PrivateChatSendFileListener(title, this));
-		exitButton.addActionListener(new PrivateChatExitListener(title));
-		sendButton.addActionListener(new PrivateChatSendListener(title, inputMessageTextArea, chatRecordTextArea,this));
+        sendFileButton.addActionListener(new PrivateChatSendFileListener(title, this));
+        exitButton.addActionListener(new PrivateChatExitListener(title));
+        sendButton.addActionListener(new PrivateChatSendListener(title, inputMessageTextArea, chatRecordTextArea, this));
 
-		panel.add(functionPanel);
+        panel.add(functionPanel);
 
-		final String titleTemp = title;
-		addWindowListener(new WindowAdapter()
-		{
-			@Override
-			public void windowClosing(WindowEvent e)
-			{
-				PrivateChatUI.removeChatUI(titleTemp);
-				System.out.println("¹Ø±ÕÁËË½ÁÄ´°¿Ú");
-			}
-		});
-		setVisible(true);
-	}
+        final String titleTemp = title;
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                PrivateChatUI.removeChatUI(titleTemp);
+                System.out.println("å…³é—­äº†ç§èŠçª—å£");
+            }
+        });
+        setVisible(true);
+    }
 
-	public void toScreen(String fromUser, String message)
-	{
-		chatRecordTextArea.append(fromUser + " £º " + message + "\r\n");
-		int  height= 99999 ; //¾¡Á¿´ó   
-	    Point p = new  Point();   
-	    p.setLocation(0 , chatRecordTextArea.getLineCount()*height);   
-	    this.getSp().getViewport().setViewPosition(p);
-	}
+    public void toScreen(String fromUser, String message) {
+        chatRecordTextArea.append(fromUser + " ï¼š " + message + "\r\n");
+        //å°½é‡å¤§
+        int height = 99999;
+        Point p = new Point();
+        p.setLocation(0, chatRecordTextArea.getLineCount() * height);
+        this.getSp().getViewport().setViewPosition(p);
+    }
 
-	// ´Ó´°¿ÚÁĞ±íÖĞÒÆ³ı£¬ÒÔÖ¸¶¨µÄtitle
-	public static void removeChatUI(String title)
-	{
+    // ä»çª—å£åˆ—è¡¨ä¸­ç§»é™¤ï¼Œä»¥æŒ‡å®šçš„title
+    public static void removeChatUI(String title) {
 
-		// Iterator<PrivateChatUI> iterator=privateChatUIs.iterator();
-		// while(iterator.hasNext())
-		// {
-		// PrivateChatUI chat=iterator.next();
-		// if(chat.getTitleUser().equals(title))
-		// privateChatUIs.remove(chat);
-		// }
-		privateChatUIs.remove(title).dispose();;
-	}
+        // Iterator<PrivateChatUI> iterator=privateChatUIs.iterator();
+        // while(iterator.hasNext())
+        // {
+        // PrivateChatUI chat=iterator.next();
+        // if(chat.getTitleUser().equals(title))
+        // privateChatUIs.remove(chat);
+        // }
+        privateChatUIs.remove(title).dispose();
+        ;
+    }
 
-	public String getTitleUser()
-	{
-		return title;
-	}
+    public String getTitleUser() {
+        return title;
+    }
 
-	public void setTitleUser(String title)
-	{
-		this.title = title;
-	}
+    public void setTitleUser(String title) {
+        this.title = title;
+    }
 
-	// new ĞÂ´°¿Ú²¢½«½ÓÊÕµÄÏûÏ¢ÏÔÊ¾
-	public static void newInstance(String user, String message)
-	{
-		// LinkedList<PrivateChatUI> chats = PrivateChatUI.privateChatUIs;
-		// boolean flag = false; // Ô­ÓĞ´°¿ÚÊÇ·ñ´æÔÚ£¬Ä¬ÈÏ²»´æÔÚ
-		// for (PrivateChatUI chat : chats)
-		// {
-		// if (chat.getTitleUser().equals(user))
-		// {
-		// chat.showMessage(user, message);
-		// flag = true; // ´æÔÚ
-		// }
-		// }
-		// if (!flag) // ²»´æÔÚÔònewĞÂ´°¿Ú
-		// {
-		// PrivateChatUI privateChatUI = new PrivateChatUI(user);
-		// chats.add(privateChatUI);
-		// privateChatUI.showMessage(user, message);
-		// }
-		HashMap<String, PrivateChatUI> uis = privateChatUIs;
-		if (uis.containsKey(user))
-		{ // ´æÔÚ´Ë´°¿Ú
-			uis.get(user).toScreen(user, message);
-		} else
-		{
-			// ²»´æÔÚ
-			PrivateChatUI privateChatUI = new PrivateChatUI(user);
-			uis.put(user, privateChatUI);
-			privateChatUI.toScreen(user, message);
-		}
+    // new æ–°çª—å£å¹¶å°†æ¥æ”¶çš„æ¶ˆæ¯æ˜¾ç¤º
+    public static void newInstance(String user, String message) {
+        // LinkedList<PrivateChatUI> chats = PrivateChatUI.privateChatUIs;
+        // boolean flag = false; // åŸæœ‰çª—å£æ˜¯å¦å­˜åœ¨ï¼Œé»˜è®¤ä¸å­˜åœ¨
+        // for (PrivateChatUI chat : chats)
+        // {
+        // if (chat.getTitleUser().equals(user))
+        // {
+        // chat.showMessage(user, message);
+        // flag = true; // å­˜åœ¨
+        // }
+        // }
+        // if (!flag) // ä¸å­˜åœ¨åˆ™newæ–°çª—å£
+        // {
+        // PrivateChatUI privateChatUI = new PrivateChatUI(user);
+        // chats.add(privateChatUI);
+        // privateChatUI.showMessage(user, message);
+        // }
+        HashMap<String, PrivateChatUI> uis = privateChatUIs;
+        // å­˜åœ¨æ­¤çª—å£
+        if (uis.containsKey(user)) {
+            uis.get(user).toScreen(user, message);
+        } else {
+            // ä¸å­˜åœ¨
+            PrivateChatUI privateChatUI = new PrivateChatUI(user);
+            uis.put(user, privateChatUI);
+            privateChatUI.toScreen(user, message);
+        }
 
-	}
+    }
 
-	// new ĞÂ´°¿Ú
-	public static void newInstance(String user)
-	{
+    // new æ–°çª—å£
+    public static void newInstance(String user) {
 //		LinkedList<PrivateChatUI> chats = PrivateChatUI.privateChatUIs;
-//		boolean flag = false; // Ô­ÓĞ´°¿ÚÊÇ·ñ´æÔÚ£¬Ä¬ÈÏ²»´æÔÚ
+//		boolean flag = false; // åŸæœ‰çª—å£æ˜¯å¦å­˜åœ¨ï¼Œé»˜è®¤ä¸å­˜åœ¨
 //		for (PrivateChatUI chat : chats)
 //		{
 //			if (chat.getTitleUser().equals(user))
 //			{
-//				flag = true; // ´æÔÚ
-//				JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "´°¿ÚÒÑ´æÔÚ", "ÌáÊ¾", 1);
+//				flag = true; // å­˜åœ¨
+//				JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "çª—å£å·²å­˜åœ¨", "æç¤º", 1);
 //			}
 //		}
-//		if (!flag) // ²»´æÔÚÔònewĞÂ´°¿Ú
+//		if (!flag) // ä¸å­˜åœ¨åˆ™newæ–°çª—å£
 //		{
 //			PrivateChatUI privateChatUI = new PrivateChatUI(user);
 //			chats.add(privateChatUI);
 //		}
-		HashMap<String, PrivateChatUI> uis = privateChatUIs;
-		if (uis.containsKey(user))
-		{ // ´æÔÚ´Ë´°¿Ú
-			JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "´°¿ÚÒÑ´æÔÚ", "ÌáÊ¾", 1);
-		} else
-		{
-			// ²»´æÔÚ
-			PrivateChatUI privateChatUI = new PrivateChatUI(user);
-			uis.put(user, privateChatUI);
-		}
-		
-	}
+        HashMap<String, PrivateChatUI> uis = privateChatUIs;
+        // å­˜åœ¨æ­¤çª—å£
+        if (uis.containsKey(user)) {
+            JOptionPane.showMessageDialog(ChatRoomUI.getInstance(), "çª—å£å·²å­˜åœ¨", "æç¤º", 1);
+        } else {
+            // ä¸å­˜åœ¨
+            PrivateChatUI ui = new PrivateChatUI(user);
+            uis.put(user, ui);
+        }
 
-	public JScrollPane getSp()
-	{
-		return sp;
-	}
+    }
 
-	public void setSp(JScrollPane sp)
-	{
-		this.sp = sp;
-	}
+    public JScrollPane getSp() {
+        return sp;
+    }
 
-	public JTextArea getChatRecordTextArea()
-	{
-		return chatRecordTextArea;
-	}
+    public void setSp(JScrollPane sp) {
+        this.sp = sp;
+    }
 
-	public void setChatRecordTextArea(JTextArea chatRecordTextArea)
-	{
-		this.chatRecordTextArea = chatRecordTextArea;
-	}
+    public JTextArea getChatRecordTextArea() {
+        return chatRecordTextArea;
+    }
 
-	public JTextArea getInputMessageTextArea()
-	{
-		return inputMessageTextArea;
-	}
+    public void setChatRecordTextArea(JTextArea chatRecordTextArea) {
+        this.chatRecordTextArea = chatRecordTextArea;
+    }
 
-	public void setInputMessageTextArea(JTextArea inputMessageTextArea)
-	{
-		this.inputMessageTextArea = inputMessageTextArea;
-	}
+    public JTextArea getInputMessageTextArea() {
+        return inputMessageTextArea;
+    }
+
+    public void setInputMessageTextArea(JTextArea inputMessageTextArea) {
+        this.inputMessageTextArea = inputMessageTextArea;
+    }
 }

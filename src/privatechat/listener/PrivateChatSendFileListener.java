@@ -12,63 +12,57 @@ import domain.ClientThread;
 import domain.ServerThread;
 import privatechat.ui.PrivateChatUI;
 
-public class PrivateChatSendFileListener implements ActionListener
-{
+public class PrivateChatSendFileListener implements ActionListener {
 
-	public static File file;
-	private String title;// ¶Ô·½id
-	private PrivateChatUI privateChat;
+    public static File file;
+    // å¯¹æ–¹id
+    private String title;
+    private PrivateChatUI privateChat;
 
-	public PrivateChatSendFileListener(String title, PrivateChatUI privateChat)
-	{
-		this.title = title;
-		this.privateChat = privateChat;
-	}
+    public PrivateChatSendFileListener(String title, PrivateChatUI privateChat) {
+        this.title = title;
+        this.privateChat = privateChat;
+    }
 
-	@Override
-	public void actionPerformed(ActionEvent e)
-	{
-		System.out.println("·¢ËÍÎÄ¼ş");
-		JFileChooser fc = new JFileChooser();
-		fc.setFileFilter(new FileFilter()
-		{
-			@Override
-			public String getDescription()
-			{
-				// ÏÔÊ¾ÄÄÖÖÀàĞÍµÄ
-				return ".*";
-			}
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("å‘é€æ–‡ä»¶");
+        JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(new FileFilter() {
+            @Override
+            public String getDescription() {
+                // æ˜¾ç¤ºå“ªç§ç±»å‹çš„
+                return ".*";
+            }
 
-			@Override
-			public boolean accept(File f)
-			{
-				return true;
-			}
-		});
-		int returnVal = fc.showOpenDialog(privateChat);	//·µ»ØµÄ×´Ì¬
-		file = fc.getSelectedFile();
-		
-		
-		if (returnVal == JFileChooser.APPROVE_OPTION)
-		{
-			if (ServerThread.getIntance().getServerNickName() == null) // ·şÎñ¶ËêÇ³ÆÎª¿Õ
-			{
-				System.out.println("Á¬½Ó¶Ë·¢ËÍÎÄ¼şÌáĞÑ");
-				ClientThread.getInstance().send(
-						"@FileToOne@\r\n" + title + "\r\n" + ClientThread.getInstance().getClientName() + "\r\n",
-						file.getName() + "\r\n" + file.length());
-				System.out.println("FileUtils.sendFile ½«Òª·¢ËÍµÄÎÄ¼ş"+PrivateChatSendFileListener.file);
-			} else
-			{
-				System.out.println("·şÎñ¶Ë·¢ËÍÎÄ¼şÌáĞÑ");
-				// ServerThread.getIntance().sendToOne(title,ServerThread.getIntance().getServerNickName(),
-				// message);
-				ServerThread.getIntance().sendFileMessage(title, ServerThread.getIntance().getServerNickName(),
-						file.getName(), new Double(file.length()).toString());
-				System.out.println("FileUtils.sendFile ½«Òª·¢ËÍµÄÎÄ¼ş"+PrivateChatSendFileListener.file);
-			}
-		}
+            @Override
+            public boolean accept(File f) {
+                return true;
+            }
+        });
+        //è¿”å›çš„çŠ¶æ€
+        int returnVal = fc.showOpenDialog(privateChat);
+        file = fc.getSelectedFile();
 
-	}
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            // æœåŠ¡ç«¯æ˜µç§°ä¸ºç©º
+            if (ServerThread.getIntance().getServerNickName() == null) {
+                System.out.println("è¿æ¥ç«¯å‘é€æ–‡ä»¶æé†’");
+                ClientThread.getInstance().send(
+                        "@FileToOne@\r\n" + title + "\r\n" + ClientThread.getInstance().getClientName() + "\r\n",
+                        file.getName() + "\r\n" + file.length());
+                System.out.println("FileUtils.sendFile å°†è¦å‘é€çš„æ–‡ä»¶" + PrivateChatSendFileListener.file);
+            } else {
+                System.out.println("æœåŠ¡ç«¯å‘é€æ–‡ä»¶æé†’");
+                // ServerThread.getIntance().sendToOne(title,ServerThread.getIntance().getServerNickName(),
+                // message);
+                ServerThread.getIntance().sendFileMessage(title, ServerThread.getIntance().getServerNickName(),
+                        file.getName(), new Double(file.length()).toString());
+                System.out.println("FileUtils.sendFile å°†è¦å‘é€çš„æ–‡ä»¶" + PrivateChatSendFileListener.file);
+            }
+        }
+
+    }
 
 }
