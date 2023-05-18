@@ -15,3 +15,7 @@
 > 感谢 google 机翻
 > 
 > Thanks Google Translate
+
+![1](doc/1.png)
+
+![2](doc/2.png)
